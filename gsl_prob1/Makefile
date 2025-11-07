@@ -2,35 +2,33 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17 -Iinc
 
+# GSL library flags
+LIBS = -lgsl -lgslcblas -lm
+
 # Folders
 SRC_DIR = src
-INC_DIR = inc
 BUILD_DIR = build
 
-# Target executable name
-TARGET = $(BUILD_DIR)/hello.exe
+# Target
+TARGET = $(BUILD_DIR)/prob.exe
 
-# Find all .cpp files in src/
+# Sources and objects
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SRCS))
 
 # Default rule
 all: $(TARGET)
 
-# Link object files
 $(TARGET): $(OBJS)
 	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
 
-# Compile each .cpp to .o inside build/
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Clean up build artifacts
 clean:
 	rm -f $(BUILD_DIR)/*.o $(TARGET)
 
-# Run the executable
 run: $(TARGET)
 	./$(TARGET)
