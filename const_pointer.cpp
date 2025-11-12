@@ -42,6 +42,13 @@ ptr = &y;   // OK: pointer can point somewhere else
   * `x` in RAM, mutable
   * `ptr` in RAM, points to `x`
 
+struktura eseten
+•       (*p).C // p is explicitly dereferenced in order to access the C component
+•       p->C // p is implicitly dereferenced in order to access the C component
+
+
+
+
 ---
 
 ### b) `const int *ptr;` (pointer to const data)
@@ -144,6 +151,11 @@ volatile const int *reg = (volatile const int *)0x3F200000;
 I can also make a **diagram showing pointer/data constness visually in memory**, which really helps understand `int * const`, `const int *`, etc., for embedded systems.
 
 Do you want me to make that diagram?
+
+
+
+******************
+
 
 
 
