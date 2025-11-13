@@ -10,25 +10,24 @@ The object approach suggests a completely different way of thinking.
 The data and the code are enclosed together 
 in the same world, 
 divided into classes. 
-Every class is like a recipe that can be used when you want to create a useful object (yes, this is where the name of the approach came from). 
-You may produce as many objects as you need to solve your problem. 
+
+Every class is like a recipe that can be used when you want to create a useful object 
+  
 Every object has a set of traits (they’re called properties) and 
 is able to perform a set of activities (which are called methods).
 
 
-Objects are incarnations of ideas expressed in classes, much like a piece of cheesecake on your plate is an incarnation of an idea expressed in the recipe printed in an old cookbook. 
-
-•	a noun, you probably define the object’s name
-•	adjective, you probably define the object’s property
-•	a verb, you probably define the object’s activity
-
+Objects are incarnations of ideas expressed in classes, 
+much like a piece of cheesecake on your plate is an incarnation of an idea 
+expressed in the recipe printed in an old cookbook. 
 
 inheritance
-Any object bound to a specific level of a class hierarchy inherits all the traits (as well as requirements and qualities) defined inside any of the superclasses.
+Any object bound to a specific level of a class hierarchy inherits all the traits 
+(as well as requirements and qualities) defined inside any of the superclasses.
 
 every existing object may be equipped with three groups of attributes
 a noun, you probably define the object’s name
-adjective, you probably define the object’s property
+an adjective, you probably define the object’s property
 a verb, you probably define the object’s activity
 "Max is a large cat who sleeps all day"
 Object name = Max
@@ -41,7 +40,10 @@ Activity = Sleep (all day)
 stack, lifo
 lilo?
 
-A class is an aggregate consisting of variables (also called fields or properties) and functions (sometimes called methods). Both variables and functions are class components.
+A class is an aggregate 
+consisting of variables (also called fields or properties) and 
+functions (sometimes called methods). 
+Both variables and functions are class components.
 
 
 THIS pointer
@@ -73,12 +75,11 @@ private:
 int Class::getVal(void) { //outside def "::"
       return value;
 }
-Class object1, object2(100);
-cout << object1.getVal() << endl;
-cout << object2.getVal() << endl;
+
 int main(void) {
 	Class1 object11(100), object12 = object11; // object copy
 	Class2 object21(200), object22 = object21;
+	Class1 object1_ = 10;//implicit conversion  object1_ = Class1(10)
 	cout << object12.value << endl;
 	cout << object22.value << endl;
 	return 0;
@@ -87,49 +88,69 @@ int main(void) {
 
 
 
-There’s another important fact worth mentioning: the constructors aren’t real functions. They don’t have any return type – not even void. You need to take this into consideration when declaring or defining a new constructor.
+There’s another important fact worth mentioning: the constructors aren’t real functions. 
+They don’t have any return type – not even void. 
+You need to take this into consideration when declaring or defining a new constructor.
 
-class Stack {
-    private:
-            int stackstore[100];
-            int SP;
-    public:
-        Stack(void) { SP = 0; }
-            void push(int value);
-            int pop(void) {
-                 return stackstore[--SP];
-     }
+
+
+auto keyword---see auto.cpp
+
+
+A static component exists throughout the whole life of the program. Moreover, there is always only one component regardless of the number of instances of the class.
+We can say that all the instances share the same static components.
+#include <iostream>
+using namespace std;
+class Class {
+	//static int Counter; //lehet itt is privatban
+public:
+	static int Counter; //minden peldanynak ua
+	Class(void) { ++Counter; };
+	~Class(void) { 
+		--Counter; 
+		if(Counter == 0) cout << "Bye, bye!" << endl; 
+	};
+	static void HowMany(void) { cout << Counter << " instances" << endl; } //static func, minden peldanynak ua
 };
-
-void Stack::push(int value) {
-            stackstore[SP++] = value;
+int Class::Counter = 0;
+int main(void) {
+	Class a;
+	Class b;
+	cout << Class::Counter << " instances so far" << endl;
+	Class c;
+	Class d;
+	d.HowMany();
+	return 0;
 }
 
-A class is an aggregate consisting of variables (also called fields or properties) and functions (sometimes called methods). Both variables and functions are class components.
-
-•	(*p).C // p is explicitly dereferenced in order to access the C component
-•	p->C // p is implicitly dereferenced in order to access the C component
-
+****************************************
 
 
 #include <iostream>
 using namespace std;
-class Class1 {
+
+class Test {
 public:
-	Class1(int val) { this -> value = val; } //konstruktor
-	Class1(Class1 const &source) { value = source.value + 100; }
-	int value;
+    static void funS1(void) { cout << "static" << endl; }
+    static void funS2(void) { funS1(); }
 };
-class Class2 {
-public:
-	Class2(int val) { this -> value = val; }
-	int value;
-};
+
 int main(void) {
-	Class1 object11(100), object12 = object11;
-	Class2 object21(200), object22 = object21;
-	cout << object12.value << endl;
-	cout << object22.value << endl;
-	return 0;
+    Test object;
+    /* !!! --->    // a static func es a static var peldanyositas nelkul is helyet foglal a memoriaban */
+    Test::funS2(); //Can be called using ClassName::FunctionName() without creating an object.    
+    object.funS2();
+    return 0;
 }
+
+
+    a static component accesses a static component         ---> OK
+    a static component accesses a non-static component     ---> notOK
+    a non-static component accesses a static component     ---> OK
+    a non-static component accesses a non-static component ---> OK
+
+
+
+
+
 
