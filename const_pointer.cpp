@@ -32,9 +32,18 @@ We’ll use `int x = 10; int y = 20;` as examples.
 ```cpp
 int x = 10;
 int *ptr = &x;
+int a[10];
+int b[10];
 
 *ptr = 5;   // OK: change value of x through ptr
 ptr = &y;   // OK: pointer can point somewhere else
+ptr = a;    // Assigns to `ptr` the *address of the first element of array `a`*.
+            // Equivalent to: ptr = &a[0];
+b[0] = *prt;// dereferences prt and load the value stored in a[0];
+prt = &a[0];
+b[1] = *(prt+1);// pointer aritmetic happens and dereferences
+b[3] = ptr[3]; //Array-index syntax on a pointer
+
 ```
 
 * Memory:

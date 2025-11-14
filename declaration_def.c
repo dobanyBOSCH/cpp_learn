@@ -7,7 +7,7 @@ extern int globalCount;   // Declaration: "globalCount exists somewhere"
 void printCount(void);    // Declaration: function exists somewhere
 
 // ===== Variable Definition =====
-int globalCount = 10;     // Definition: actually allocates and initializes
+int globalCount = 10;     // Definition: actually allocates and initializes, (all definitions are declarations too)
 
 // ===== Function Definition =====
 void printCount(void) {   // Definition: provides the function body

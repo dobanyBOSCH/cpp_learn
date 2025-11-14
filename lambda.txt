@@ -1,0 +1,182 @@
+A **lambda** in C++ is a small, inline, anonymous function that you can define directly where you need it—without giving it a formal name.
+
+They were introduced in **C++11** and are heavily used in modern C++ for callbacks, algorithms, and functional-style programming.
+
+---
+
+# 🔍 **What a Lambda Is — The Simple Explanation**
+
+A **lambda expression** is a quick way to write a function *inside* your code.
+
+Example:
+
+```cpp
+auto add = [](int a, int b) {
+    return a + b;
+};
+cout << add(2, 3);   // prints 5
+```
+
+Here:
+
+* `[]` is the capture list
+* `(int a, int b)` are the parameters
+* `{ return a + b; }` is the function body
+
+Lambdas behave just like small, inline functions.
+
+---
+
+# 📌 **Why Lambdas Exist**
+
+Before lambdas, you had to create functor structs just to pass functions:
+
+```cpp
+struct Add {
+    int operator()(int a, int b) { return a + b; }
+};
+```
+
+Now you can do it in one line.
+
+---
+
+# 🧠 **How Lambdas Work Internally**
+
+Under the hood, a lambda generates a compiler-created class with:
+
+* an `operator()` (call operator)
+* member variables that store captured variables
+
+This is why lambdas can capture local variables.
+
+---
+
+# ✋ **Capture List (the `[]` part)**
+
+The capture list defines which outside variables the lambda is allowed to use:
+
+### 1️⃣ Capture nothing
+
+```cpp
+[]() { /* ... */ }
+```
+
+### 2️⃣ Capture by value (copy)
+
+```cpp
+[x]() { cout << x; }
+```
+
+### 3️⃣ Capture by reference
+
+```cpp
+[&x]() { x = 10; }
+```
+
+### 4️⃣ Capture all by value
+
+```cpp
+[=]() { ... }
+```
+
+### 5️⃣ Capture all by reference
+
+```cpp
+[&]() { ... }
+```
+
+---
+
+# ⚡ **`mutable` — Why It Exists**
+
+By default, captured-by-value variables are **read-only** inside the lambda.
+
+Example:
+
+```cpp
+int x = 10;
+auto f = [x]() { x++; };  // ❌ error: cannot modify captured copy
+```
+
+To modify the *copy*, use `mutable`:
+
+```cpp
+auto f = [x]() mutable { x++; };
+```
+
+Important: this still does NOT modify the original `x`.
+
+---
+
+# 🌀 **Lambda + `auto` + STL**
+
+Lambdas work beautifully with STL algorithms:
+
+```cpp
+vector<int> v = {1, 2, 3, 4};
+
+for_each(v.begin(), v.end(), [](int x){
+    cout << x << " ";
+});
+```
+
+Or filtering:
+
+```cpp
+auto it = find_if(v.begin(), v.end(),
+                  [](int x){ return x % 2 == 0; });
+```
+
+---
+
+# 📋 **Full Lambda Syntax Breakdown**
+
+```
+[captures] (parameters) -> return_type {
+    body
+};
+```
+
+Example:
+
+```cpp
+auto f = [x](int y) -> int {
+    return x + y;
+};
+```
+
+Return type can be omitted if obvious.
+
+---
+
+# 🧩 **Real Uses of Lambdas**
+
+* Callbacks (GUI, networking, events)
+* Sorting with custom rules
+* Thread functions
+* Functional-style data processing
+* Replacing functor classes
+
+Example: sorting by length
+
+```cpp
+sort(v.begin(), v.end(),
+     [](const string& a, const string& b){
+         return a.size() < b.size();
+     });
+```
+
+---
+
+# ✅ Want examples of advanced lambdas?
+
+I can explain:
+
+* generic lambdas (`auto` parameters)
+* `std::function` vs lambdas
+* capturing `this`
+* capturing move-only objects
+* recursive lambdas
+
+Just tell me!

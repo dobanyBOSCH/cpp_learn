@@ -151,6 +151,380 @@ int main(void) {
 
 
 
+Pointers to objects
+So far we’ve treated objects like ordinary variables and 
+assumed that an object is created in the place where it is declared and 
+destroyed when its declaration scope is exited. <----!!!!!!!! tesztelni
+This is only one of the many possible object incarnations.
 
+Objects may also exist as dynamically created and destroyed entities. 
+In other words, objects may appear on demand – when they’re needed – and vanish in the same way.
+#include <iostream>
+using namespace std;
+class Class {
+public:
+	Class(void) {
+		cout << "Object constructed!" << endl;
+	}
+	~Class(void) {
+		cout << "Object destructed!" << endl;
+	}
+	void IncAndPrint(void) {
+		cout << "value = " << ++value << endl;
+	}
+	int value;
+};	
+int main(void) {
+	Class *ptr;
+	
+	ptr = new Class;
+	ptr -> value = 1;
+	ptr -> IncAndPrint();
+	delete ptr;
+	return 0;
+}
 
+!!! All the variables, including objects, brought to life in the “ordinary” way 
+(by declaration, not by the use of the new keyword) 
+live in a separate area of memory called the stack. 
+It’s a memory region dedicated to storing all automatic entities.
+
+The entities created “on demand” (by the new keyword) are created in a specific memory region usually called a heap. 
+In contrary to the stack, the heap is fully (almost fully, to be honest) under your control. 
+You decide how many variables, arrays, objects, etc. will occupy the heap and it’s up to you when these entities end their lives.
+
+The object being stored in the heap must be accessed in a way that resembles the access to the dynamically allocated structures. 
+You mustn’t use the ordinary “dotted” notation as there’s no structure (object) 
+which can play the role of the left argument of the “.” operator 
+unless you dereference the pointer. You need to use the “arrow” (->) operator instead.
+
+The conclusion is: constructors from inner objects (objects stored inside other objects) are invoked before the outer object’s constructors start their work.
+list all the inner objects’ constructors
+#include <iostream>
+using namespace std;
+class Element {
+	int value;
+public:
+	Element(int val) {
+		value = val; cout << "Element(" << val << ") constructed!" << endl;
+	}
+	int Get(void) { return value; }
+	void Put(int val) { value = val; }
+};
+class Collection {
+	Element el1, el2;
+public:
+	Collection(void) : el2(2), el1(1) { cout << "Collection constructed!" << endl; } //<------!!!!
+	int Get(int elno) { return elno == 1 ? el1.Get() : el2.Get(); }
+	int Put(int elno, int val) { if(elno == 1) el1.Put(val); else el2.Put(val); }
+};
+int main(void) {
+	Collection coll;
+	return 0;
+}
+
+********************
+practice test
+
+Here is a **C++ Intermediate Test** with a balanced mix of concepts: OOP, templates, STL, memory management, modern C++ (11–20), pointers/references, and tricky language details.
+**Answers and explanations included.**
+
+---
+
+# ✅ **C++ Intermediate Test (with Answers)**
+
+## **Section A — Multiple Choice (10 questions)**
+
+### **1. What is the output of the following code?**
+
+```cpp
+int x = 10;
+auto f = [x]() mutable { x += 5; return x; };
+cout << f() << " " << x;
+```
+
+**A.** `15 10`
+**B.** `15 15`
+**C.** `10 10`
+**D.** Compilation error
+
+✔ **Answer: A**
+`mutable` makes a copy of `x` modifiable inside the lambda. The original `x` remains unchanged.
+
+---
+
+### **2. Which RAII principle is correct?**
+
+**A.** Constructors acquire resources, destructors release them
+**B.** Destructors acquire resources, constructors release them
+**C.** Resources must be manually managed via `malloc` and `free`
+**D.** RAII only works with smart pointers
+
+✔ **Answer: A**
+
+---
+
+### **3. What does this program print?**
+
+```cpp
+vector<int> v = {1,2,3,4};
+v.erase(v.begin() + 1, v.begin() + 3);
+for (int x : v) cout << x;
+```
+
+**A.** `1234`
+**B.** `14`
+**C.** `134`
+**D.** `12`
+
+✔ **Answer: B**
+Erases elements at indexes 1 and 2 → removes `2` and `3`.
+
+---
+
+### **4. What is `std::move`?**
+
+**A.** Forces a deep copy
+**B.** Casts to rvalue reference
+**C.** Deletes the object after use
+**D.** Moves objects automatically
+
+✔ **Answer: B**
+
+---
+
+### **5. Which smart pointer allows shared ownership?**
+
+**A.** `std::unique_ptr`
+**B.** `std::shared_ptr`
+**C.** `std::weak_ptr`
+**D.** All of the above
+
+✔ **Answer: B**
+
+---
+
+### **6. What is the output?**
+
+```cpp
+int a = 5;
+int& r = a;
+auto x = r;
+x = 10;
+cout << a;
+```
+
+**A.** 5
+**B.** 10
+**C.** Undefined
+**D.** Compilation error
+
+✔ **Answer: A**
+`auto` deduces a **copy** of `r`, not a reference.
+
+---
+
+### **7. Which keyword prevents a class from being inherited?**
+
+**A.** `sealed`
+**B.** `final`
+**C.** `private`
+**D.** `static`
+
+✔ **Answer: B**
+
+---
+
+### **8. What does this code do?**
+
+```cpp
+template<typename T>
+void f(T&& x);
+```
+
+**A.** Always takes rvalues
+**B.** Always takes lvalues
+**C.** Uses universal (forwarding) references
+**D.** Declares an error
+
+✔ **Answer: C**
+
+---
+
+### **9. What is wrong with this code?**
+
+```cpp
+string* s = new string("hi");
+throw s;
+```
+
+**A.** Exception must be primitive
+**B.** Memory leak risk
+**C.** Cannot throw pointers
+**D.** Throw must be inside try
+
+✔ **Answer: B**
+
+---
+
+### **10. In multithreading, `std::lock_guard` is used for:**
+
+**A.** Lazy initialization
+**B.** Creating a mutex
+**C.** Exception-safe locking
+**D.** Unlocking only
+
+✔ **Answer: C**
+
+---
+
+---
+
+# ✳ **Section B — Short Answer (5 Questions)**
+
+### **11. What is “undefined behavior”? Give a small example.**
+
+✔ **Answer:**
+Behavior not defined by the C++ standard; anything can happen.
+
+Example:
+
+```cpp
+int x = 5;
+int* p = &x;
+delete p;   // UB: deleting stack memory
+```
+
+---
+
+### **12. What is the difference between `override` and `final`?**
+
+✔ **Answer:**
+
+* `override`: ensures a method overrides a virtual one.
+* `final`: prevents further overriding (for methods) or inheritance (for classes).
+
+---
+
+### **13. What is the difference between `std::list` and `std::vector`?**
+
+✔ **Answer:**
+
+* `vector`: contiguous memory, fast random access
+* `list`: node-based, fast insertion/deletion at any position
+
+---
+
+### **14. What is “move semantics” in C++?**
+
+✔ **Answer:**
+Optimizes performance by transferring resources from temporary objects instead of copying them. Uses rvalue references (`T&&`).
+
+---
+
+### **15. Why are virtual destructors important?**
+
+✔ **Answer:**
+To ensure correct cleanup when deleting a derived object through a base-class pointer.
+
+---
+
+---
+
+# 🔧 **Section C — Coding Questions**
+
+## **16. Predict the output**
+
+```cpp
+struct A {
+    A() { cout << "A "; }
+    A(const A&) { cout << "C "; }
+    A(A&&) { cout << "M "; }
+};
+
+A make() {
+    A a;
+    return a;
+}
+
+int main() {
+    A x = make();
+}
+```
+
+✔ **Answer:**
+`A M` (likely, due to NRVO + move ctor)
+— or just `A` if NRVO fully eliminates the move (depending on compiler).
+
+---
+
+## **17. Fix the following code (bug: memory leak + double free risk)**
+
+```cpp
+int* p = new int(10);
+shared_ptr<int> sp(p);
+shared_ptr<int> sp2(p);
+```
+
+✔ **Corrected version:**
+
+```cpp
+auto sp = make_shared<int>(10);
+auto sp2 = sp;
+```
+
+Using `make_shared` avoids double deletion.
+
+---
+
+## **18. Write a function template `maxOf` that returns the larger of two values.**
+
+✔ **Answer:**
+
+```cpp
+template<typename T>
+T maxOf(const T& a, const T& b) {
+    return (a > b) ? a : b;
+}
+```
+
+---
+
+## **19. What does this code print?**
+
+```cpp
+int a = 1;
+int b = 2;
+int&& r = std::move(a);
+r = 5;
+cout << a << " " << b;
+```
+
+✔ **Answer:**
+`5 2`
+`r` refers to `a` even though it is an rvalue reference.
+
+---
+
+## **20. Explain what `emplace_back` does in `std::vector`.**
+
+✔ **Answer:**
+Constructs the element **in place** without temporary copies, passing arguments directly to the element’s constructor.
+
+---
+
+---
+
+# 🎉 **If you want more:**
+
+I can generate:
+
+* Harder C++ test
+* Object-oriented only test
+* STL-only test
+* Test without answers
+* Test with explanations only
+* Interview-style C++ challenges
+
+Just tell me!
 
